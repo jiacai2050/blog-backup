@@ -35,9 +35,24 @@ node bin/main.js -w nathan -o /tmp/nathan -v
 | nathan | http://nathanmarz.com/  |
 | TBD    | ...                     |
 
+**** Your blog
+In order to backup your blog posts, you can try add a new [[src/blog_backup/type.cljs#L10][Blog]] protocol implementation, it requires two method:
+- =current-posts=, return array of post's link, like ={"url": "xxx", "title" "awesome-title" }=
+- =page-down!=, define how many pages are there in this blog
+
+This is how Nathan's Blog get defined.
+#+begin_src clojure
+(defmethod new-blog "nathan" [_ browser]
+  (let [archive-url "http://nathanmarz.com/archives/"]
+    (go (new-blog-inner browser
+                        "div.journal-archive-set > ul > li > a"
+                        (constantly archive-url)
+                        1))))
+#+end_src
+
 *** Backup single page
 #+begin_src bash
-node bin/single-page.js <url>
+node bin/single-page.js <url> <out-dir>
 #+end_src
 
 *  License

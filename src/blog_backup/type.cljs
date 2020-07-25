@@ -11,7 +11,10 @@
   (page-down! [this])
   (current-posts [this]))
 
-(defn- new-blog-inner [browser selector pager total-page]
+(defn- new-blog-inner
+  "selector: pass to document.querySelectorAll to find all posts on current page.
+  pager: construct the url of next page"
+  [browser selector pager total-page]
   (let [current-page (atom 0)
         total-page (js/parseInt total-page)]
     (reify Blog
@@ -66,7 +69,7 @@
                         (<! (u/<eval-in-page browser
                                              archive-url
                                              "nav.page-navigator > a"
-                                             (fn [links](.-innerHTML (aget links 2)))))))))
+                                             (fn [links] (.-innerHTML (aget links 2)))))))))
 
 (defmethod new-blog "yw" [_ browser]
   (let [archive-url "http://www.yinwang.org/"]
