@@ -1,0 +1,16 @@
+pom.xml
+*jar
+/lib/
+/classes/
+/out/
+/release/
+/target/
+.lein-deps-sum
+.lein-repl-history
+.lein-plugins/
+.repl*
+node_modules/
+bin/*js
+.nrepl-port
+.cljs_node_repl/
+.DS_Store

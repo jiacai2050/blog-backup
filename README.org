@@ -1,0 +1,36 @@
+* blog-backup
+
+Backup blog posts to PDF files.
+
+** Setup
+
+#+begin_src bash
+
+1. install dependencies
+npm i
+# or
+lein npm i
+
+2. compile JS file
+lein cljsbuild once main
+lein cljsbuild once single-page
+
+3.
+# backup all blogposts
+node bin/main.js -h
+
+# backup single url
+node bin/single-page.js <url>
+#+end_src
+
+
+**  Supported Blogs
+| -w     | blog                    |
+|--------+-------------------------|
+| ljc    | https://liujiacai.net/  |
+| yw     | http://www.yinwang.org/ |
+| nathan | http://nathanmarz.com/  |
+| TBD    | ...                     |
+
+*  License
+[[http://liujiacai.net/license/MIT.html?year=2020][MIT License]] © Jiacai Liu
