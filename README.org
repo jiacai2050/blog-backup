@@ -13,15 +13,34 @@ lein npm i
 
 2. compile Node.js script
 lein cljsbuild once main
-lein cljsbuild once single-page
+or
+lein release
 #+end_src
 
 ** Usage
+#+begin_src bash
+node bin/main.js -h
+  -o, --out-dir DIR          /tmp/blog  output dir
+  -w, --who WHO                         whose blog to print
+  -a, --addr Address                    print a single page
+  -p, --proxy PROXY                     http proxy
+  -P, --puppeteer-opts OPTS             options to set on the browser. format: a=b;c=d
+  -v, --verbose
+  -h, --help
+
+#+end_src
+*** Backup single page
+#+begin_src bash
+node bin/main.js -a https://news.ycombinator.com/item?id=23947157
+#+end_src
+You can also set a proxy
+#+begin_src bash
+node bin/main.js -p socks5://127.0.0.1:13659 -a https://news.ycombinator.com/item?id=23947157
+#+end_src
+
 *** Backup All posts of blog
 #+begin_src
-# review help
-node bin/main.js -h
-
+# help
 # demo, backup nathan's posts to /tmp/nathan
 node bin/main.js -w nathan -o /tmp/nathan -v
 #+end_src
@@ -48,11 +67,6 @@ This is how Nathan's Blog get defined.
                         "div.journal-archive-set > ul > li > a"
                         (constantly archive-url)
                         1))))
-#+end_src
-
-*** Backup single page
-#+begin_src bash
-node bin/single-page.js <url> <out-dir>
 #+end_src
 
 *  License

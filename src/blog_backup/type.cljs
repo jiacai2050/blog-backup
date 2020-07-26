@@ -52,9 +52,9 @@
                   (<! (u/<save-as-pdf browser out-name {:url url}))
                   (catch js/Error e
                     (error! e)))))
-            (info! "pagedown..")
+            (debug! "pagedown..")
             (recur (page-down! blog)))
-          (info! "no more pages."))))))
+          (debug! "no more pages."))))))
 
 (defmulti new-blog :who)
 

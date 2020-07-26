@@ -11,7 +11,8 @@
             ;; nodejs module
             [fs]
             [os]
-            [puppeteer]))
+            [puppeteer])
+  (:import [goog.i18n DateTimeFormat]))
 
 (defonce home-dir (.homedir os))
 
@@ -29,7 +30,25 @@
   (with-out-str
     (pprint (js->clj x))))
 
-(defn <new-browser [& {:as opts}]
+(defonce ^DateTimeFormat time-format (DateTimeFormat. "yyyy-MM-dd_HH:mm:ss"))
+
+(defn pretty-time [t]
+  (.format time-format t))
+
+(defn prepare-options [proxy puppeteer-opts]
+  (as-> (->> (cs/split puppeteer-opts #"[;]")
+             (filter #(not (cs/blank? %)))
+             ;; can't use cs/split with limit
+             ;; https://clojure.atlassian.net/browse/CLJS-2528
+             (map #(js->clj (gs/splitLimit % "=" 2)))
+             (map (fn [[k v]] [(cs/trim k) (cs/trim v)]))
+             (into {}))
+      $
+    (if proxy
+      (update $ :args (fnil #(conj % (str "--proxy-server=" proxy)) []))
+      $)))
+
+(defn <new-browser [opts]
   (let [pp-opts (-> opts
                     (update :user-data-dir #(or % (str home-dir "/pp")))
                     (clj->js :keyword-fn (comp csk/->camelCase name)))]
@@ -76,9 +95,9 @@
       (when-not (zero? (count (.readdirSync fs dir)))
         (throw (js/Error "output dir not empty" {})))
       (do
-        (info! (str "create dir " dir))
+        (debug! (str "create dir " dir))
         (.mkdirSync fs dir)))
-    (info! (str "output dir set to " dir))))
+    (debug! (str "output dir set to " dir))))
 
 (defn format-name [out-dir url title seq-num]
   (gs/format "%s/%s-%s.pdf" out-dir

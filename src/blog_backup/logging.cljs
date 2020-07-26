@@ -34,7 +34,12 @@
                                 [(str log-name ":" (.getSequenceNumber log-record))]
                                 (or msg ""))
                        (when-let [ex (.getException log-record)]
-                         (println (.-stack ex)))))))))
+                         (println (.-stack ex))
+                         (loop [cause (ex-cause ex)]
+                           (when cause
+                             (println "caused by:" (.-stack cause))
+                             (recur (ex-cause cause))))
+                         )))))))
 
 
 (defn make-log-record ^LogRecord [ns-name line ^Level level message exception]
