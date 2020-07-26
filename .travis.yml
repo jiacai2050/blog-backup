@@ -1,0 +1,11 @@
+language: clojure
+jdk:
+  - openjdk8
+env:
+  - NODE_VERSION=8 CC=clang CXX=clang++
+before_install:
+  - nvm install $NODE_VERSION
+  - npm install
+
+script:
+  - lein test

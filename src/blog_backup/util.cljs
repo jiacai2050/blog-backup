@@ -41,19 +41,18 @@
              ;; can't use cs/split with limit
              ;; https://clojure.atlassian.net/browse/CLJS-2528
              (map #(js->clj (gs/splitLimit % "=" 2)))
-             (map (fn [[k v]] [(cs/trim k) (cs/trim v)]))
+             (map (fn [[k v]] [(cs/trim (csk/->camelCase k)) (cs/trim v)]))
              (into {}))
       $
+    (update $ "args" (fnil #(js->clj (js/JSON.parse %)) "[]"))
     (if proxy
-      (update $ :args (fnil #(conj % (str "--proxy-server=" proxy)) []))
-      $)))
+      (update $ "args" #(conj % (str "--proxy-server=" proxy)))
+      $)
+    (update $ "userDataDir" #(or % (str home-dir "/.blog_backup")))))
 
-(defn <new-browser [opts]
-  (let [pp-opts (-> opts
-                    (update :user-data-dir #(or % (str home-dir "/pp")))
-                    (clj->js :keyword-fn (comp csk/->camelCase name)))]
-    (debug! (.stringify js/JSON pp-opts))
-    (go (<p! (.launch puppeteer pp-opts)))))
+(defn <new-browser [pp-opts]
+  (debug! pp-opts)
+  (go (<p! (.launch puppeteer (js->clj pp-opts)))))
 
 (defn <save-as-pdf [browser filepath {:keys [page url]}]
   (go

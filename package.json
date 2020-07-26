@@ -1,12 +1,8 @@
 {
   "private": true,
   "name": "blog-backup",
-  "description": "FIXME: write this!",
+  "description": "Backup blog posts to PDF for offline storage",
   "version": "0.1.0-SNAPSHOT",
-  "bin": {
-    "blog-backup": "bin/main.js",
-    "single-page": "bin/single-page.js"
-  },
   "dependencies": {
     "puppeteer": "5.2.0",
     "source-map-support": "0.5.19"

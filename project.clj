@@ -11,9 +11,9 @@
                  [org.clojure/tools.cli "1.0.194"]
                  ]
   :jvm-opts ^:replace ["-Xmx1g" "-server"]
-  :plugins [[lein-npm "0.6.2"]
-            [lein-cljsbuild "1.1.8"]
-            [lein-pprint "1.3.2"]]
+  :plugins [[lein-cljsbuild "1.1.8"]
+            [lein-pprint "1.3.2"]
+            [lein-doo "0.1.10"]]
   :npm {:dependencies [[source-map-support "0.5.19"]
                        [puppeteer "5.2.0"]]}
   :source-paths ["src" "target/classes"]
@@ -22,7 +22,12 @@
   :profiles {:dev {:dependencies [[cider/piggieback "0.5.0"]]
                    :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}}
              :release {:cljsbuild {:builds {:main {:compiler {:optimizations :simple
-                                                              :pretty-print false}}}}}}
+                                                              :pretty-print false}}}}}
+             :test {:cljsbuild {:builds {:test {:source-paths ["src" "test"]
+                                                :compiler {:output-to "target/js/test.js"
+                                                           :main blog-backup.runner
+                                                           :target :nodejs
+                                                           :optimizations :none}}}}}}
   :cljsbuild {:builds {:main {:source-paths ["src"]
                               :compiler {:output-to "bin/main.js"
                                          :closure-defines {"goog.log.ENABLED" true}
@@ -31,6 +36,7 @@
                                          :target :nodejs
                                          :pretty-print true}}}}
   :aliases {"dev" ["cljsbuild" "auto" "main"]
+            "test" ["with-profile" "test" "doo" "node" "test" "auto"]
             "release" ["with-profile" "release" "do"
                        ["clean"]
                        ["cljsbuild" "once" "main"]]})

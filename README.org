@@ -1,4 +1,4 @@
-* blog-backup
+* blog-backup [[https://travis-ci.org/jiacai2050/blog-backup][https://travis-ci.org/jiacai2050/blog-backup.svg?branch=master]]
 
 Backup blog posts to PDF files.
 
@@ -8,13 +8,13 @@ Backup blog posts to PDF files.
 
 1. install dependencies
 npm i
-# or
-lein npm i
 
 2. compile Node.js script
 lein cljsbuild once main
-or
+# or
 lein release
+# or download already compiled main.js from release page
+# https://github.com/jiacai2050/blog-backup/releases
 #+end_src
 
 ** Usage
@@ -38,10 +38,9 @@ You can also set a proxy
 node bin/main.js -p socks5://127.0.0.1:13659 -a https://news.ycombinator.com/item?id=23947157
 #+end_src
 
-*** Backup All posts of blog
+*** Backup All blog posts
 #+begin_src
-# help
-# demo, backup nathan's posts to /tmp/nathan
+# Demo, backup nathan's posts to /tmp/nathan
 node bin/main.js -w nathan -o /tmp/nathan -v
 #+end_src
 
@@ -55,7 +54,7 @@ node bin/main.js -w nathan -o /tmp/nathan -v
 | TBD    | ...                     |
 
 **** Your blog
-In order to backup your blog posts, you can try add a new [[src/blog_backup/type.cljs#L10][Blog]] protocol implementation, it requires two method:
+In order to backup your blog posts, you can try add a new [[./src/blog_backup/type.cljs#L10][Blog]] protocol implementation, it requires two method:
 - =current-posts=, return array of post's link, like ={"url": "xxx", "title" "awesome-title" }=
 - =page-down!=, define how many pages are there in this blog
 
