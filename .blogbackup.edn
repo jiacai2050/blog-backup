@@ -5,6 +5,11 @@
           :posts-selector "div#content > p > a"
           :page-tmpl "{{base-url}}"
           :total-page 1}
+         {:id "meituan"
+          :base-url "https://tech.meituan.com/"
+          :posts-selector "div.post-container > h2 > a"
+          :page-tmpl "{{base-url}}{{^first-page}}page/{{page-num}}.html{{/first-page}}"
+          :total-page 21}
          {:id "ljc2"
           :base-url "https://liujiacai.net/archives/"
           :posts-selector "ul.listing > li > a"
@@ -24,4 +29,5 @@
           :base-url "http://nathanmarz.com/archives/"
           :posts-selector "div.journal-archive-set > ul > li > a"
           :page-tmpl "{{base-url}}"
-          :total-page 1}]}
+          :total-page 1}
+         ]}

@@ -1,6 +1,6 @@
 * blog-backup [[https://travis-ci.org/jiacai2050/blog-backup][https://travis-ci.org/jiacai2050/blog-backup.svg?branch=master]]
 
-Backup blog posts to PDF files.
+Backup blogposts to PDF for offline storage / reading in Kindle, built with Puppeteer and ClojureScript
 
 ** Setup
 #+begin_src bash
