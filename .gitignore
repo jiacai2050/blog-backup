@@ -14,3 +14,4 @@ bin/*js
 .nrepl-port
 .cljs_node_repl/
 .DS_Store
+.eastwood

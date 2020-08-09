@@ -52,7 +52,7 @@
 
 (defn <new-browser [pp-opts]
   (debug! pp-opts)
-  (go (<p! (.launch puppeteer (js->clj pp-opts)))))
+  (go (<p! (.launch puppeteer (clj->js pp-opts)))))
 
 (defn <save-as-pdf [browser filepath {:keys [page url]}]
   (go
@@ -81,10 +81,14 @@
   (go (let [page (<p! (.newPage browser))
             resp (<p! (.goto page url openpage-opts))
             code (.status resp)]
+
         (try
+          ;; (<p! (.evaluate page (fn [] (.scrollBy js/window 0 (.. js/document -body -scrollHeight)))))
+          ;; (<p! (.evaluate page (fn [] (.scrollBy js/window 0 (.. js/window -innerHeight)))))
           (if (>= code 400)
             (throw (ex-info "goto failed" {:url url :code code :headers  (pretty-str (.headers resp))}))
             (<p! (.$$eval page selector vanilla-js-fn)))
+          (catch js/Error e (error! e))
           (finally (<p! (.close page)))))))
 
 
@@ -105,4 +109,6 @@
                    (str (gs/format "%03d" seq-num)
                         "-"
                         (subs url (inc sep)))))
-             (cs/replace title "/" "-")))
+             (if (empty? title)
+               (last (cs/split url "/"))
+               (cs/replace title "/" "-"))))

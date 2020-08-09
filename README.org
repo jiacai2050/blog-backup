@@ -46,12 +46,13 @@ node bin/main.js -w nathan -o /tmp/nathan -v
 
 **** Supported Blog
 
-| -w     | blog                    |
-|--------+-------------------------|
-| ljc    | https://liujiacai.net/  |
-| yw     | http://www.yinwang.org/ |
-| nathan | http://nathanmarz.com/  |
-| TBD    | ...                     |
+| -w     | blog                                            |
+|--------+-------------------------------------------------|
+| ljc    | https://liujiacai.net/                          |
+| yw     | http://www.yinwang.org/                         |
+| yw-wp  | https://yinwang0.wordpress.com/author/yinwang0/ |
+| nathan | http://nathanmarz.com/                          |
+| TBD    | ...                                             |
 
 **** Your blog
 In order to backup your blog posts, you can try add a new [[./src/blog_backup/type.cljs#L10][Blog]] protocol implementation, it requires two method:

@@ -32,7 +32,7 @@
                                          ;; this callback get executed in chrome, only vanilla JS allowable
                                          (.map links (fn [link]
                                                        #js {"url" (.-href link)
-                                                            "title" (.-textContent link)})))))
+                                                            "title" (.trim (.-textContent link))})))))
                 $
               (js->clj $ :keywordize-keys true)
               (filter #(cs/starts-with? (:url %) "http") $))))))))
@@ -75,6 +75,13 @@
   (let [archive-url "http://www.yinwang.org/"]
     (go (new-blog-inner browser
                         "ul.list-group > li > a"
+                        (constantly archive-url)
+                        1))))
+
+(defmethod new-blog "yw-wp" [_ browser]
+  (let [archive-url "https://yinwang0.wordpress.com/author/yinwang0/"]
+    (go (new-blog-inner browser
+                        "div#posts-wrapper > article > a"
                         (constantly archive-url)
                         1))))
 
