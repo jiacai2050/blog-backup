@@ -3,7 +3,6 @@
 Backup blog posts to PDF files.
 
 ** Setup
-
 #+begin_src bash
 
 1. install dependencies
@@ -15,13 +14,17 @@ lein cljsbuild once main
 lein release
 # or download already compiled main.js from release page
 # https://github.com/jiacai2050/blog-backup/releases
+
+3. init conf
+ln -sf $(pwd)/.blogbackup.edn ~/.blogbackup.edn
 #+end_src
 
 ** Usage
 #+begin_src bash
-node bin/main.js -h
+node main.js -h
   -o, --out-dir DIR          /tmp/blog  output dir
   -w, --who WHO                         whose blog to print
+  -c, --conf Conf    ~/.blogbackup.edn  config file
   -a, --addr Address                    print a single page
   -p, --proxy PROXY                     http proxy
   -P, --puppeteer-opts OPTS             options to set on the browser. format: a=b;c=d
@@ -29,21 +32,11 @@ node bin/main.js -h
   -h, --help
 
 #+end_src
-*** Backup single page
-#+begin_src bash
-node bin/main.js -a https://news.ycombinator.com/item?id=23947157
-#+end_src
-You can also set a proxy
-#+begin_src bash
-node bin/main.js -p socks5://127.0.0.1:13659 -a https://news.ycombinator.com/item?id=23947157
-#+end_src
-
-*** Backup All blog posts
+*** Backup All posts of a blog
 #+begin_src
 # Demo, backup nathan's posts to /tmp/nathan
-node bin/main.js -w nathan -o /tmp/nathan -v
+node main.js -w nathan -o /tmp/nathan -v
 #+end_src
-
 **** Supported Blog
 
 | -w     | blog                                            |
@@ -54,19 +47,32 @@ node bin/main.js -w nathan -o /tmp/nathan -v
 | nathan | http://nathanmarz.com/                          |
 | TBD    | ...                                             |
 
-**** Your blog
-In order to backup your blog posts, you can try add a new [[./src/blog_backup/type.cljs#L10][Blog]] protocol implementation, it requires two method:
-- =current-posts=, return array of post's link, like ={"url": "xxx", "title" "awesome-title" }=
-- =page-down!=, define how many pages are there in this blog
-
-This is how Nathan's Blog get defined.
+**** Extension
+In order to backup any posts of a blog, you can try add a new item in [[file:.blogbackup.edn][.blog-backup.edn]], such as
 #+begin_src clojure
-(defmethod new-blog "nathan" [_ browser]
-  (let [archive-url "http://nathanmarz.com/archives/"]
-    (go (new-blog-inner browser
-                        "div.journal-archive-set > ul > li > a"
-                        (constantly archive-url)
-                        1))))
+{:id "ljc"
+ :base-url "https://liujiacai.net/archives/"
+ :posts-selector "ul.listing > li > a"
+ :page-tmpl "{{base-url}}{{^first-page}}page/{{page-num}}{{/first-page}}"
+ :total-page 8}
+#+end_src
+- =base-url=,  archives page of a blog
+- =posts-selector=, selector passed to =document.querySelectorAll= to select all posts
+- =page-tmpl=, [[https://github.com/fotoetienne/cljstache][cljstache]] template used for render url of different archive pages, it's rendered with three keys:
+  - =base-url= string
+  - =first-page= boolean
+  - =page-num= number
+- =total-page= total num of archives page
+
+*** Backup single page
+#+begin_src bash
+node main.js -a https://news.ycombinator.com/item?id=23947157
+#+end_src
+*** Hack
+You can also set http proxy with =-p= or puppeteer.launch [[https://pptr.dev/#?product=Puppeteer&version=v5.2.1&show=api-puppeteerlaunchoptions][options]] with =-P=
+#+begin_src bash
+node main.js -p socks5://127.0.0.1:13659 -a https://news.ycombinator.com/item?id=23947157
+node main.js -p socks5://127.0.0.1:13659 -P 'timeout=60;devtools=true' -a https://news.ycombinator.com/item?id=23947157
 #+end_src
 
 *  License

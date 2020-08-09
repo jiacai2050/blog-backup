@@ -35,6 +35,9 @@
 (defn pretty-time [t]
   (.format time-format t))
 
+(defn format-str [tmpl & args]
+  (apply gs/format tmpl args))
+
 (defn prepare-options [proxy puppeteer-opts]
   (as-> (->> (cs/split puppeteer-opts #"[;]")
              (filter #(not (cs/blank? %)))
@@ -77,7 +80,7 @@
                                 }))))))
 
 (defn <eval-in-page [browser url selector vanilla-js-fn]
-  (debug! (gs/format "[eval-in-page] url: %s, selector: %s" url selector))
+  (debug! (format-str "[eval-in-page] url: %s, selector: %s" url selector))
   (go (let [page (<p! (.newPage browser))
             resp (<p! (.goto page url openpage-opts))
             code (.status resp)]
@@ -91,6 +94,9 @@
           (catch js/Error e (error! e))
           (finally (<p! (.close page)))))))
 
+(defn slurp [filepath]
+  (when (.existsSync fs filepath)
+    (fs/readFileSync filepath (clj->js {:encoding "utf8"}))))
 
 (defn init-dir! [dir]
   (let [dir (or dir "/tmp/blog")]
@@ -103,12 +109,12 @@
     (debug! (str "output dir set to " dir))))
 
 (defn format-name [out-dir url title seq-num]
-  (gs/format "%s/%s-%s.pdf" out-dir
-             (or (some-> (re-find #"\d+/\d+/\d+" url) (cs/replace "/" "-"))
-                 (let [sep (cs/last-index-of url "/")]
-                   (str (gs/format "%03d" seq-num)
-                        "-"
-                        (subs url (inc sep)))))
-             (if (empty? title)
-               (last (cs/split url "/"))
-               (cs/replace title "/" "-"))))
+  (format-str "%s/%s-%s.pdf" out-dir
+              (or (some-> (re-find #"\d+/\d+/\d+" url) (cs/replace "/" "-"))
+                  (let [sep (cs/last-index-of url "/")]
+                    (str (gs/format "%03d" seq-num)
+                         "-"
+                         (subs url (inc sep)))))
+              (if (empty? title)
+                (last (cs/split url "/"))
+                (cs/replace title "/" "-"))))

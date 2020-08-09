@@ -1,4 +1,4 @@
-(defproject blog-backup "0.1.0-SNAPSHOT"
+(defproject blog-backup "0.2.0"
   :description "Backup blog posts to PDF for offline storage"
   :url "https://github.com/jiacai2050/blog-backup/"
   :license {:name "MIT"
@@ -8,6 +8,7 @@
                  [org.clojure/core.async "1.2.603"]
                  [camel-snake-kebab "0.4.1"]
                  [hiccups "0.3.0"]
+                 [cljstache "2.0.6"]
                  [org.clojure/tools.cli "1.0.194"]
                  ]
   :jvm-opts ^:replace ["-Xmx1g" "-server"]

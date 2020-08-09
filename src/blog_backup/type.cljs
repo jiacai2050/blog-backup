@@ -2,6 +2,7 @@
   (:require  [cljs.core.async :refer [go <!]]
              [cljs.core.async.interop :refer-macros [<p!]]
              [clojure.string :as cs]
+             [cljstache.core :refer [render]]
              [goog.string :as gs]
              [goog.string.format]
              [blog-backup.logging :refer [debug! info! error!]]
@@ -58,6 +59,22 @@
 
 (defmulti new-blog :who)
 
+
+(defn new-static-blog [{:keys [base-url posts-selector page-tmpl total-page]
+                        :as blog-item}
+                       browser]
+  (debug! (str "use static blog: " blog-item))
+  (new-blog-inner browser
+                  posts-selector
+                  (fn [page-num]
+                    (render page-tmpl {:first-page (== 1 page-num)
+                                       :base-url base-url
+                                       :page-num page-num}))
+                  total-page))
+
+(defmethod new-blog :default [{:keys [who]} _]
+  (throw (ex-info (gs/format "%s's blog doesn't support yet. " who) {})))
+
 (defmethod new-blog "ljc" [_ browser]
   (let [archive-url "https://liujiacai.net/archives"]
     (go (new-blog-inner browser
@@ -71,26 +88,24 @@
                                              "nav.page-navigator > a"
                                              (fn [links] (.-innerHTML (aget links 2)))))))))
 
-(defmethod new-blog "yw" [_ browser]
-  (let [archive-url "http://www.yinwang.org/"]
-    (go (new-blog-inner browser
-                        "ul.list-group > li > a"
-                        (constantly archive-url)
-                        1))))
+;; use static blog config instead
+;; (defmethod new-blog "yw" [_ browser]
+;;   (let [archive-url "http://www.yinwang.org/"]
+;;     (go (new-blog-inner browser
+;;                         "ul.list-group > li > a"
+;;                         (constantly archive-url)
+;;                         1))))
 
-(defmethod new-blog "yw-wp" [_ browser]
-  (let [archive-url "https://yinwang0.wordpress.com/author/yinwang0/"]
-    (go (new-blog-inner browser
-                        "div#posts-wrapper > article > a"
-                        (constantly archive-url)
-                        1))))
+;; (defmethod new-blog "yw-wp" [_ browser]
+;;   (let [archive-url "https://yinwang0.wordpress.com/author/yinwang0/"]
+;;     (go (new-blog-inner browser
+;;                         "div#posts-wrapper > article > a"
+;;                         (constantly archive-url)
+;;                         1))))
 
-(defmethod new-blog "nathan" [_ browser]
-  (let [archive-url "http://nathanmarz.com/archives/"]
-    (go (new-blog-inner browser
-                        "div.journal-archive-set > ul > li > a"
-                        (constantly archive-url)
-                        1))))
-
-(defmethod new-blog :default [{:keys [who]} _]
-  (throw (ex-info (gs/format "%s's blog doesn't support yet. " who) {})))
+;; (defmethod new-blog "nathan" [_ browser]
+;;   (let [archive-url "http://nathanmarz.com/archives/"]
+;;     (go (new-blog-inner browser
+;;                         "div.journal-archive-set > ul > li > a"
+;;                         (constantly archive-url)
+;;                         1))))

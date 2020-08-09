@@ -1,0 +1,22 @@
+{:description "Blog-backup config"
+ :home-page "https://github.com/jiacai2050/blog-backup"
+ :blogs [{:id "ljc2"
+          :base-url "https://liujiacai.net/archives/"
+          :posts-selector "ul.listing > li > a"
+          :page-tmpl "{{base-url}}{{^first-page}}page/{{page-num}}{{/first-page}}"
+          :total-page 8}
+         {:id "yw"
+          :base-url "http://www.yinwang.org/"
+          :posts-selector "ul.list-group > li > a"
+          :page-tmpl "{{base-url}}"
+          :total-page 1}
+         {:id "yw-wp"
+          :base-url "https://yinwang0.wordpress.com/author/yinwang0/"
+          :posts-selector "div#posts-wrapper > article > a"
+          :page-tmpl "{{base-url}}"
+          :total-page 1}
+         {:id "nathan"
+          :base-url "http://nathanmarz.com/archives/"
+          :posts-selector "div.journal-archive-set > ul > li > a"
+          :page-tmpl "{{base-url}}"
+          :total-page 1}]}
