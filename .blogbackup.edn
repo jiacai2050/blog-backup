@@ -1,6 +1,11 @@
 {:description "Blog-backup config"
  :home-page "https://github.com/jiacai2050/blog-backup"
- :blogs [{:id "ljc2"
+ :blogs [{:id "go-blog"
+          :base-url "https://blog.golang.org/index"
+          :posts-selector "div#content > p > a"
+          :page-tmpl "{{base-url}}"
+          :total-page 1}
+         {:id "ljc2"
           :base-url "https://liujiacai.net/archives/"
           :posts-selector "ul.listing > li > a"
           :page-tmpl "{{base-url}}{{^first-page}}page/{{page-num}}{{/first-page}}"
