@@ -1,0 +1,7 @@
+.*
+!.blogbackup.edn
+out
+project.clj
+src
+target
+test

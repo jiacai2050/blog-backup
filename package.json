@@ -1,10 +1,27 @@
 {
-  "private": true,
   "name": "blog-backup",
   "description": "Backup blog posts to PDF for offline storage",
-  "version": "0.1.0-SNAPSHOT",
+  "version": "0.3.0",
+  "bin": "./bin/main.js",
+  "scripts": {
+    "postinstall": "ln -sf $(pwd)/.blogbackup.edn ~"
+  },
+  "main": "bin/main.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jiacai2050/blog-backup.git"
+  },
+  "keywords": ["blog", "backup", "tool"],
   "dependencies": {
-    "puppeteer": "5.2.0",
+    "puppeteer": "5.2.0"
+  },
+  "devDependencies": {
     "source-map-support": "0.5.19"
+  },
+  "bugs": {
+    "url": "https://github.com/jiacai2050/blog-backup/issues"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
   }
 }

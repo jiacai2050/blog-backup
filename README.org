@@ -1,14 +1,22 @@
-* blog-backup [[https://travis-ci.org/jiacai2050/blog-backup][https://travis-ci.org/jiacai2050/blog-backup.svg?branch=master]]
+* blog-backup [[https://travis-ci.org/jiacai2050/blog-backup][https://travis-ci.org/jiacai2050/blog-backup.svg?branch=master]] [[https://www.npmjs.com/package/blog-backup][https://img.shields.io/npm/v/blog-backup]]
 
 Backup blogposts to PDF for offline storage / reading in Kindle, built with Puppeteer and ClojureScript
 
 ** Setup
+*** NPM
+#+begin_src bash
+npm i blog-backup --global --registry https://registry.npmjs.org/
+#+end_src
+=blog-backup= command will be installed at $NPM/bin, and [[./.blogbackup.edn][.blogbackup.edn]] will be soft-linked to your home directry.
+
+*** Manual
+
 #+begin_src bash
 
 1. install dependencies
 npm i
 
-2. compile Node.js script
+2. compile Node.js script to bin/main.js
 lein cljsbuild once main
 # or
 lein release
@@ -21,7 +29,7 @@ ln -sf $(pwd)/.blogbackup.edn ~/.blogbackup.edn
 
 ** Usage
 #+begin_src bash
-node main.js -h
+blog-backup -h
   -o, --out-dir DIR          /tmp/blog  output dir
   -w, --who WHO                         whose blog to print
   -c, --conf Conf    ~/.blogbackup.edn  config file
@@ -35,7 +43,7 @@ node main.js -h
 *** Backup All posts of a blog
 #+begin_src
 # Demo, backup nathan's posts to /tmp/nathan
-node main.js -w nathan -o /tmp/nathan -v
+blog-backup -w nathan -o /tmp/nathan -v
 #+end_src
 **** Supported Blog
 
@@ -66,13 +74,13 @@ In order to backup any posts of a blog, you can try add a new item in [[file:.bl
 
 *** Backup single page
 #+begin_src bash
-node main.js -a https://news.ycombinator.com/item?id=23947157
+blog-backup -a https://news.ycombinator.com/item?id=23947157
 #+end_src
 *** Hack
 You can also set http proxy with =-p= or puppeteer.launch [[https://pptr.dev/#?product=Puppeteer&version=v5.2.1&show=api-puppeteerlaunchoptions][options]] with =-P=
 #+begin_src bash
-node main.js -p socks5://127.0.0.1:13659 -a https://news.ycombinator.com/item?id=23947157
-node main.js -p socks5://127.0.0.1:13659 -P 'timeout=60;devtools=true' -a https://news.ycombinator.com/item?id=23947157
+blog-backup -p socks5://127.0.0.1:13659 -a https://news.ycombinator.com/item?id=23947157
+blog-backup -p socks5://127.0.0.1:13659 -P 'timeout=60;devtools=true' -a https://news.ycombinator.com/item?id=23947157
 #+end_src
 
 *  License
