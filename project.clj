@@ -6,6 +6,11 @@
   :dependencies [[org.clojure/clojure "1.10.1"]
                  [org.clojure/clojurescript "1.10.773"]
                  [org.clojure/core.async "1.2.603"]
+                 ;; https://github.com/alexanderkiel/async-error
+                 [org.clojars.akiel/async-error "0.3"
+                  :exclusions [org.clojure/core.async
+                               org.clojure/clojure]]
+                 ;; [funcool/promesa "5.1.0"]
                  [camel-snake-kebab "0.4.1"]
                  [hiccups "0.3.0"]
                  [cljstache "2.0.6"]

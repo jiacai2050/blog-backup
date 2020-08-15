@@ -1,16 +1,17 @@
 (ns blog-backup.type
-  (:require  [cljs.core.async :refer [go <!]]
-             [cljs.core.async.interop :refer-macros [<p!]]
-             [clojure.string :as cs]
-             [cljstache.core :refer [render]]
-             [goog.string :as gs]
-             [goog.string.format]
-             [blog-backup.logging :refer [debug! info! error!]]
-             [blog-backup.util :as u]))
+  (:require [async-error.core :refer-macros [go-try <?]]
+            [clojure.string :as cs]
+            [cljstache.core :refer [render]]
+            [goog.string :as gs]
+            [goog.string.format]
+            [blog-backup.logging :refer [debug! info! error!]]
+            [blog-backup.util :as u]))
 
 (defprotocol Blog
   (page-down! [this])
-  (current-posts [this]))
+  (current-page [this])
+  (current-posts [this])
+  )
 
 (defn- new-blog-inner
   "selector: pass to document.querySelectorAll to find all posts on current page.
@@ -25,40 +26,44 @@
               true)
           false))
 
+      (current-page [this]
+        @current-page)
+
       (current-posts [this]
-        (go
-          (let [url (pager @current-page)]
-            (as-> (<! (u/<eval-in-page browser url selector
-                                       (fn [links]
-                                         ;; this callback get executed in chrome, only vanilla JS allowable
-                                         (.map links (fn [link]
-                                                       #js {"url" (.-href link)
-                                                            "title" (.trim (.-textContent link))})))))
-                $
-              (js->clj $ :keywordize-keys true)
-              (filter #(cs/starts-with? (:url %) "http") $))))))))
+        (go-try
+         (let [url (pager @current-page)]
+           (as-> (<? (u/<eval-in-page browser url selector
+                                      (fn [links]
+                                        ;; this callback get executed in chrome, only vanilla JS allowable
+                                        (.map links (fn [link]
+                                                      #js {"url" (.-href link)
+                                                           "title" (.trim (.-textContent link))})))))
+               $
+             (js->clj $ :keywordize-keys true)
+             (filter #(cs/starts-with? (:url %) "http") $))))))))
 
 (defn <print-all-posts [browser blog out-dir]
-  (go
-    (loop [has-more (page-down! blog)]
-      (let [num-print (atom 0)]
-        (if has-more
-          (let [posts (<! (current-posts blog))]
-            (debug! (u/pretty-str posts))
-            (debug! (count posts))
-            (doseq [{:keys [title url]} posts]
-              (let [out-name (u/format-name out-dir url title (swap! num-print inc))]
-                (info! out-name)
-                (try
-                  (<! (u/<save-as-pdf browser out-name {:url url}))
-                  (catch js/Error e
-                    (error! e)))))
-            (debug! "pagedown..")
-            (recur (page-down! blog)))
-          (debug! "no more pages."))))))
+  (go-try
+   (loop [has-more (page-down! blog)]
+     (let [num-print (atom 0)]
+       (if has-more
+         (do
+           (when-let [posts (try (<? (current-posts blog))
+                                 (catch js/Error e
+                                   (error! (u/format-str "failed to save %d page, skip to next" (current-page blog)) e)))]
+             (debug! (u/pretty-str posts))
+             (debug! (count posts))
+             (doseq [{:keys [title url]} posts]
+               (let [out-name (u/format-name out-dir url title (swap! num-print inc))]
+                 (try
+                   (<? (u/<save-as-pdf browser out-name {:url url}))
+                   (catch js/Error e
+                     (error! (u/format-str "failed to save %s, skip to next..." url) e)))))
+             (debug! "pagedown.."))
+           (recur (page-down! blog)))
+         (debug! "no more pages."))))))
 
 (defmulti new-blog :who)
-
 
 (defn new-static-blog [{:keys [base-url posts-selector page-tmpl total-page]
                         :as blog-item}
@@ -77,16 +82,16 @@
 
 (defmethod new-blog "ljc" [_ browser]
   (let [archive-url "https://liujiacai.net/archives"]
-    (go (new-blog-inner browser
-                        "ul.listing > li > a"
-                        (fn [page-num]
-                          (if (== page-num 1)
-                            archive-url
-                            (gs/format "%s/page/%d" archive-url page-num)))
-                        (<! (u/<eval-in-page browser
-                                             archive-url
-                                             "nav.page-navigator > a"
-                                             (fn [links] (.-innerHTML (aget links 2)))))))))
+    (go-try (new-blog-inner browser
+                            "ul.listing > li > a"
+                            (fn [page-num]
+                              (if (== page-num 1)
+                                archive-url
+                                (gs/format "%s/page/%d" archive-url page-num)))
+                            (<? (u/<eval-in-page browser
+                                                 archive-url
+                                                 "nav.page-navigator > a"
+                                                 (fn [links] (.-innerHTML (aget links 2)))))))))
 
 ;; use static blog config instead
 ;; (defmethod new-blog "yw" [_ browser]
