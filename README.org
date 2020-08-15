@@ -57,7 +57,7 @@ In order to backup any posts of a blog, you can try add a new item in [[file:.bl
  :total-page 8}
 #+end_src
 - =base-url=,  archives page of a blog
-- =posts-selector=, selector passed to =document.querySelectorAll= to select all posts
+- =posts-selector=, selector passed to =document.querySelectorAll= to select all posts. (usually end with =a= tag)
 - =page-tmpl=, [[https://github.com/fotoetienne/cljstache][cljstache]] template used for render url of different archive pages, it's rendered with three keys:
   - =base-url= string
   - =first-page= boolean

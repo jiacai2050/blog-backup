@@ -10,6 +10,11 @@
           :posts-selector "div.post-container > h2 > a"
           :page-tmpl "{{base-url}}{{^first-page}}page/{{page-num}}.html{{/first-page}}"
           :total-page 21}
+         {:id "fish"
+          :base-url "https://tech.ipalfish.com/blog/archives/"
+          :posts-selector "div.post-title > a.post-title-link"
+          :page-tmpl "{{base-url}}{{^first-page}}page/{{page-num}}/{{/first-page}}"
+          :total-page 6}
          {:id "ljc2"
           :base-url "https://liujiacai.net/archives/"
           :posts-selector "ul.listing > li > a"
