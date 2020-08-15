@@ -34,10 +34,10 @@
                                 [(str log-name ":" (.getSequenceNumber log-record))]
                                 (or msg ""))
                        (when-let [ex (.getException log-record)]
-                         (println (.-stack ex))
+                         (println (.-stack ex) "\n" (ex-data ex))
                          (loop [cause (ex-cause ex)]
                            (when cause
-                             (println "caused by:" (.-stack cause))
+                             (println "caused by:" (.-stack cause) "\n" (ex-data cause))
                              (recur (ex-cause cause))))
                          )))))))
 

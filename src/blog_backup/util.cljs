@@ -95,7 +95,7 @@
                 ;; (<p! (.evaluate page (fn [] (.scrollBy js/window 0 (.. js/document -body -scrollHeight)))))
                 ;; (<p! (.evaluate page (fn [] (.scrollBy js/window 0 (.. js/window -innerHeight)))))
                 (if (>= code 400)
-                  (throw (ex-info "goto failed" {:url url :code code :headers  (pretty-str (.headers resp))}))
+                  (throw (ex-info "goto failed" {:url url :code code :headers (pretty-str (.headers resp))}))
                   (<p! (.$$eval page selector vanilla-js-fn))))
               (finally (<p! (.close page)))))))
 

@@ -26,5 +26,7 @@
                          (str/replace url "/" "-"))
                  out-name (u/format-str "%s/%s-%s.pdf" out-dir title (u/pretty-time (js/Date.)))]
              (<? (u/<save-as-pdf browser out-name {:page page})))))
+       (catch js/Error e
+         (error! e))
        (finally
          (<p! (.close browser)))))))
