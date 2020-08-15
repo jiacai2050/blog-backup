@@ -44,8 +44,8 @@
 
 (defn <print-all-posts [browser blog out-dir]
   (go-try
-   (loop [has-more (page-down! blog)]
-     (let [num-print (atom 0)]
+   (let [num-print (atom 0)]
+     (loop [has-more (page-down! blog)]
        (if has-more
          (do
            (when-let [posts (try (<? (current-posts blog))

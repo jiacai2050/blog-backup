@@ -15,6 +15,11 @@
           :posts-selector "div.post-title > a.post-title-link"
           :page-tmpl "{{base-url}}{{^first-page}}page/{{page-num}}/{{/first-page}}"
           :total-page 6}
+         {:id "grab"
+          :base-url "https://engineering.grab.com/"
+          :posts-selector "h2 > a.post-title"
+          :page-tmpl "{{base-url}}{{^first-page}}blog/{{page-num}}/{{/first-page}}"
+          :total-page 18}
          {:id "ljc2"
           :base-url "https://liujiacai.net/archives/"
           :posts-selector "ul.listing > li > a"
