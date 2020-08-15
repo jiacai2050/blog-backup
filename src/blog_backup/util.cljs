@@ -61,26 +61,30 @@
   (go-try
    (if (.existsSync fs filepath)
      (info! (format-str "%s already exist, skip. param: %s" filepath param))
-     (let [_ (info! (format-str "save %s..." filepath ))
-           page (or page (let [np (<p! (.newPage browser))
-                               resp (<p! (.goto np url openpage-opts))
-                               code (.status resp)]
-                           (if (>= code 400)
-                             (throw (ex-info "open page" {:url url
-                                                          :code code
-                                                          :headers (pretty-str (.headers resp))}))
-                             np)))]
-       (<p! (.emulateMediaType page "print"))
-       (<p! (.pdf page (clj->js {:path filepath
-                                 :printBackground false
-                                 :displayHeaderFooter true
-                                 :margin  {:bottom 100
-                                           :top 50
-                                           :right 10
-                                           :left 10}
-                                 :headerTemplate page-header
-                                 :footerTemplate page-footer
-                                 })))))))
+     (do
+       (info! (format-str "save %s..." filepath ))
+       (let [page (or page (let [np (<p! (.newPage browser))
+                                 resp (<p! (.goto np url openpage-opts))
+                                 code (.status resp)]
+                             (if (>= code 400)
+                               (throw (ex-info "open page" {:url url
+                                                            :code code
+                                                            :headers (pretty-str (.headers resp))}))
+                               np)))]
+         (try
+           (<p! (.emulateMediaType page "print"))
+           (<p! (.pdf page (clj->js {:path filepath
+                                     :printBackground false
+                                     :displayHeaderFooter true
+                                     :margin  {:bottom 100
+                                               :top 50
+                                               :right 10
+                                               :left 10}
+                                     :headerTemplate page-header
+                                     :footerTemplate page-footer
+                                     })))
+           (finally
+             (<p! (.close page)))))))))
 
 (defn <eval-in-page [browser url selector vanilla-js-fn]
   (debug! (format-str "[eval-in-page] url: %s, selector: %s" url selector))
