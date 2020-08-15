@@ -1,4 +1,4 @@
-* blog-backup [[https://travis-ci.org/jiacai2050/blog-backup][https://travis-ci.org/jiacai2050/blog-backup.svg?branch=master]] [[https://www.npmjs.com/package/blog-backup][https://img.shields.io/npm/v/blog-backup]]
+* blog-backup [[https://travis-ci.org/jiacai2050/blog-backup][https://travis-ci.org/jiacai2050/blog-backup.svg?branch=master]] [[https://www.npmjs.com/package/blog-backup][https://badge.fury.io/js/blog-backup.svg]]
 
 Backup blogposts to PDF for offline storage / reading in Kindle, built with Puppeteer and ClojureScript
 
@@ -7,7 +7,9 @@ Backup blogposts to PDF for offline storage / reading in Kindle, built with Pupp
 #+begin_src bash
 npm i blog-backup --global --registry https://registry.npmjs.org/
 #+end_src
-=blog-backup= command will be installed at $NPM/bin, and [[./.blogbackup.edn][.blogbackup.edn]] will be soft-linked to your home directry.
+After install
+- =blog-backup= command is installed at =$NPM/bin=
+- [[./.blogbackup.edn][.blogbackup.edn]] is soft-linked to your home directry
 
 *** Manual
 
