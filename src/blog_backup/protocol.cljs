@@ -1,17 +1,16 @@
-(ns blog-backup.type
+(ns blog-backup.protocol
   (:require [async-error.core :refer-macros [go-try <?]]
             [clojure.string :as cs]
             [cljstache.core :refer [render]]
             [goog.string :as gs]
             [goog.string.format]
-            [blog-backup.logging :refer [debug! info! error!]]
-            [blog-backup.util :as u]))
+            [blog-backup.chromium :as c]
+            [blog-backup.logging :refer [debug! info! error!]]))
 
 (defprotocol Blog
   (page-down! [this])
   (current-page [this])
-  (current-posts [this])
-  )
+  (current-posts [this]))
 
 (defn- new-blog-inner
   "selector: pass to document.querySelectorAll to find all posts on current page.
@@ -32,7 +31,7 @@
       (current-posts [this]
         (go-try
          (let [url (pager @current-page)]
-           (as-> (<? (u/<eval-in-page browser url selector
+           (as-> (<? (c/<eval-in-page browser url selector
                                       (fn [links]
                                         ;; this callback get executed in chrome, only vanilla JS allowable
                                         (.map links (fn [link]
@@ -41,27 +40,6 @@
                $
              (js->clj $ :keywordize-keys true)
              (filter #(cs/starts-with? (:url %) "http") $))))))))
-
-(defn <print-all-posts [browser blog out-dir]
-  (go-try
-   (let [num-print (atom 0)]
-     (loop [has-more (page-down! blog)]
-       (if has-more
-         (do
-           (when-let [posts (try (<? (current-posts blog))
-                                 (catch js/Error e
-                                   (error! (u/format-str "failed to save %d page, skip to next" (current-page blog)) e)))]
-             (debug! (u/pretty-str posts))
-             (debug! (count posts))
-             (doseq [{:keys [title url]} posts]
-               (let [out-name (u/format-name out-dir url title (swap! num-print inc))]
-                 (try
-                   (<? (u/<save-as-pdf browser out-name {:url url}))
-                   (catch js/Error e
-                     (error! (u/format-str "failed to save %s, skip to next..." url) e)))))
-             (debug! "pagedown.."))
-           (recur (page-down! blog)))
-         (debug! "no more pages."))))))
 
 (defmulti new-blog :who)
 
@@ -88,7 +66,7 @@
                               (if (== page-num 1)
                                 archive-url
                                 (gs/format "%s/page/%d" archive-url page-num)))
-                            (<? (u/<eval-in-page browser
+                            (<? (c/<eval-in-page browser
                                                  archive-url
                                                  "nav.page-navigator > a"
                                                  (fn [links] (.-innerHTML (aget links 2)))))))))

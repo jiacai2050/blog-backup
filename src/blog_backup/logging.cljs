@@ -1,6 +1,5 @@
 (ns blog-backup.logging
-  (:require [goog.log :as glog]
-            [goog.object :as gobj])
+  (:require [goog.log :as glog])
   (:require-macros [blog-backup.logging])
   (:import [goog.log Logger LogRecord]
            [goog.i18n DateTimeFormat]
