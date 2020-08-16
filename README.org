@@ -38,7 +38,9 @@ blog-backup -h
   -a, --addr Address                    print a single page
   -p, --proxy PROXY                     http proxy
   -P, --puppeteer-opts OPTS             options to set on the browser. format: a=b;c=d
-  -v, --verbose
+  -m, --media MEDIA           print     media type
+  -u, --user-agent userAgent            userAgent
+  -v, --verbose  -v, --verbose
   -h, --help
 
 #+end_src

@@ -17,8 +17,9 @@
                         [:span.pageNumber] "/" [:span.totalPages]]))
 
 ;; https://github.com/puppeteer/puppeteer/blob/v5.2.0/docs/api.md#pagegotourl-options
-(def openpage-opts (clj->js {:timeout (* 60000 3) :waitUntil ["load" "networkidle2"]}))
+(def openpage-opts (clj->js {:timeout (* 60000 3) :waitUntil ["load"]}))
 (def media (atom "print"))
+(def user-agent (atom ""))
 
 (defn <new-browser [pp-opts]
   (debug! pp-opts)
@@ -28,6 +29,10 @@
   (go-try
    (debug! (u/format-str "goto %s, opts: %s" url (u/pretty-str openpage-opts)))
    (let [np (<p! (.newPage browser))
+         _ (let [ua @user-agent]
+             (when-not (empty? ua)
+               (debug! (u/format-str "user-agent: %s" ua))
+               (<p! (.setUserAgent np ua))))
          resp (<p! (.goto np url openpage-opts))
          ;; _ (debug! (u/format-str "goto %s done, metrics: %s" url (u/pretty-str (<p! (.metrics np)))))
          code (.status resp)]

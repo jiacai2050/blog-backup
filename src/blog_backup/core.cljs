@@ -22,6 +22,7 @@
    ;; https://pptr.dev/#?product=Puppeteer&version=v5.2.1&show=api-puppeteerlaunchoptions
    ["-P" "--puppeteer-opts OPTS" "options to set on the browser. format: a=b;c=d"]
    ["-m" "--media MEDIA" "media type" :default "print"]
+   ["-u" "--user-agent userAgent" "userAgent"]
    ["-v" "--verbose"]
    ["-h" "--help"]])
 
@@ -47,12 +48,13 @@
       (doseq [{:keys [id]
                :as blog-item} (:blogs conf)]
         (swap! static-blogs assoc id (dissoc blog-item :id)))
-      (debug! (u/format-str "static config %s" (u/pretty-str @static-blogs))))
+      (debug! (u/format-str "static config %s" @static-blogs)))
     (debug! (u/format-str "conf file %s not exist." conf-file))))
 
 (defn -main [& args]
   (let [{:keys [options summary errors] :as opts} (parse-opts args cli-options)
-        {:keys [out-dir who addr conf help verbose proxy puppeteer-opts media]} options]
+        {:keys [out-dir who addr conf help verbose proxy puppeteer-opts
+                media user-agent]} options]
     (when verbose
       (set-level! :debug))
     (debug! (str "\n" (u/pretty-str (dissoc opts :summary))))
@@ -60,6 +62,8 @@
       (parse-conf! conf))
     (when media
       (reset! c/media media))
+    (when user-agent
+      (reset! c/user-agent user-agent))
 
     (cond
       (not (nil? errors)) (error! errors)
