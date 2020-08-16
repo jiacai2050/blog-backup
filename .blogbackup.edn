@@ -20,6 +20,11 @@
           :posts-selector "h2 > a.post-title"
           :page-tmpl "{{base-url}}{{^first-page}}blog/{{page-num}}/{{/first-page}}"
           :total-page 18}
+         {:id "martin"
+          :base-url "http://martin.kleppmann.com/archive.html"
+          :posts-selector "div#content > ul > li > a"
+          :page-tmpl "{{base-url}}"
+          :total-page 1}
          {:id "ljc2"
           :base-url "https://liujiacai.net/archives/"
           :posts-selector "ul.listing > li > a"
