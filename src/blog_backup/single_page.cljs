@@ -17,8 +17,8 @@
                        $ (if (empty? $)
                            (str/replace url "/" "-")
                            $))
-             out-name (u/format-str "%s/%s-%s.pdf" out-dir title (u/pretty-time (js/Date.)))]
-         (<? (c/<save-as-pdf browser out-name {:page page})))
+             out-name (u/format-str "%s/%s.pdf" out-dir title)]
+         (<? (c/<save-as-pdf out-name page)))
        (catch js/Error e
          (error! e))
        (finally

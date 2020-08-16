@@ -33,8 +33,8 @@
          {:id "yw-wp"
           :base-url "https://yinwang0.wordpress.com/author/yinwang0/"
           :posts-selector "div#posts-wrapper > article > a"
-          :page-tmpl "{{base-url}}"
-          :total-page 1}
+          :page-tmpl "{{base-url}}{{^first-page}}page/{{page-num}}/{{/first-page}}"
+          :total-page 2}
          {:id "nathan"
           :base-url "http://nathanmarz.com/archives/"
           :posts-selector "div.journal-archive-set > ul > li > a"

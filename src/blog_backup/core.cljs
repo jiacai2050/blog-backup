@@ -37,7 +37,7 @@
                     (new-static-blog blog-item browser)
                     (<? (new-blog {:who who} browser)))]
          (<? (<print-all-posts browser blog dir)))
-       (catch js/Error e (error! e))
+       (catch js/Error e (error! "print pdf failed" e))
        (finally
          (.close browser))))))
 

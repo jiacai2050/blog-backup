@@ -54,14 +54,3 @@
         (debug! (str "create dir " dir))
         (.mkdirSync fs dir)))
     (debug! (str "output dir set to " dir))))
-
-(defn format-name [out-dir url title seq-num]
-  (format-str "%s/%s-%s.pdf" out-dir
-              (or (some-> (re-find #"\d+/\d+/\d+" url) (cs/replace "/" "-"))
-                  (let [sep (cs/last-index-of url "/")]
-                    (str (gs/format "%03d" seq-num)
-                         "-"
-                         (subs url (inc sep)))))
-              (if (empty? title)
-                (last (cs/split url "/"))
-                (cs/replace title "/" "-"))))

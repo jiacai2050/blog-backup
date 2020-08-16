@@ -37,27 +37,23 @@
                                     :headers (u/pretty-str (.headers resp))}))
        np))))
 
-(defn <save-as-pdf [browser filepath {:keys [page url] :as param}]
+(defn <save-as-pdf [filepath page]
   (go-try
    (if (.existsSync fs filepath)
-     (info! (u/format-str "%s already exist, skip. param: %s" filepath param))
+     (info! (u/format-str "%s already exist, skip." filepath))
      (do
        (info! (u/format-str "save %s..." filepath))
-       (let [page (or page (<? (<open-page browser url)))]
-         (try
-           (<p! (.emulateMediaType page @media))
-           (<p! (.pdf page (clj->js {:path filepath
-                                     :printBackground false
-                                     :displayHeaderFooter true
-                                     :margin  {:bottom 100
-                                               :top 50
-                                               :right 10
-                                               :left 10}
-                                     :headerTemplate page-header
-                                     :footerTemplate page-footer
-                                     })))
-           (finally
-             (<p! (.close page)))))))))
+       (<p! (.emulateMediaType page @media))
+       (<p! (.pdf page (clj->js {:path filepath
+                                 :printBackground false
+                                 :displayHeaderFooter true
+                                 :margin  {:bottom 100
+                                           :top 50
+                                           :right 10
+                                           :left 10}
+                                 :headerTemplate page-header
+                                 :footerTemplate page-footer
+                                 })))))))
 
 (defn <eval-in-page [browser url selector vanilla-js-fn]
   (debug! (u/format-str "[eval-in-page] url: %s, selector: %s" url selector))
