@@ -45,4 +45,9 @@
           :posts-selector "div.journal-archive-set > ul > li > a"
           :page-tmpl "{{base-url}}"
           :total-page 1}
+         {:id "mindhacks"
+          :base-url "http://mindhacks.cn/"
+          :posts-selector "h2.entry-title > a"
+          :page-tmpl "{{base-url}}{{^first-page}}page/{{page-num}}/{{/first-page}}"
+          :total-page 5}
          ]}
