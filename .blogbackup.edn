@@ -50,4 +50,9 @@
           :posts-selector "h2.entry-title > a"
           :page-tmpl "{{base-url}}{{^first-page}}page/{{page-num}}/{{/first-page}}"
           :total-page 5}
+         {:id "sean"
+          :base-url "https://links.seanmonstar.com/"
+          :posts-selector "div.link > h2 > a"
+          :page-tmpl "{{base-url}}{{^first-page}}page/{{page-num}}{{/first-page}}"
+          :total-page 14}
          ]}

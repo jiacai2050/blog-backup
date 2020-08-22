@@ -5,11 +5,11 @@ Backup blogposts to PDF for offline storage / reading in Kindle, built with Pupp
 ** Setup
 *** NPM
 #+begin_src bash
-npm i blog-backup --global --registry https://registry.npmjs.org/
+npm i blog-backup --global
 #+end_src
 After install
-- =blog-backup= command is installed at =$NPM/bin=
-- [[./.blogbackup.edn][.blogbackup.edn]] is soft-linked to your home directry
+- =blog-backup= command will be installed at =$NPM/bin=
+- [[./.blogbackup.edn][.blogbackup.edn]] will be soft-linked to your home directry
 
 *** Manual
 

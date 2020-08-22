@@ -1,7 +1,7 @@
 {
   "name": "blog-backup",
   "description": "Backup blog posts to PDF for offline storage",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "bin": "./bin/main.js",
   "scripts": {
     "postinstall": "ln -sf $(pwd)/.blogbackup.edn ~"

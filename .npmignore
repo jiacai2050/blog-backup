@@ -5,3 +5,4 @@ project.clj
 src
 target
 test
+Makefile

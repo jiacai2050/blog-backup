@@ -1,4 +1,4 @@
-(defproject blog-backup "0.3.1"
+(defproject blog-backup "0.3.2"
   :description "Backup blog posts to PDF for offline storage"
   :url "https://github.com/jiacai2050/blog-backup/"
   :license {:name "MIT"

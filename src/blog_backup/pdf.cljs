@@ -28,17 +28,18 @@
              (debug! (u/pretty-str posts))
              (debug! (count posts))
              (doseq [{:keys [title url]} posts]
-               (let [page (<? (c/<open-page browser url))]
-                 (try
-                   (let [title (if (empty? title)
-                                 (<p! (.title page))
-                                 title)
-                         out-name (format-name out-dir url title (swap! num-print inc))]
-                     (<? (c/<save-as-pdf out-name page)))
-                   (catch js/Error e
-                     (error! (u/format-str "failed to save %s, skip to next..." url) e))
-                   (finally
-                     (<p! (.close page))))))
+               (try
+                 (let [page (<? (c/<open-page browser url))]
+                   (try
+                     (let [title (if (empty? title)
+                                   (<p! (.title page))
+                                   title)
+                           out-name (format-name out-dir url title (swap! num-print inc))]
+                       (<? (c/<save-as-pdf out-name page)))
+                     (finally
+                       (<p! (.close page)))))
+                 (catch js/Error e
+                   (error! (u/format-str "failed to save %s, skip to next..." url) e))))
              (debug! "pagedown.."))
            (recur (prot/page-down! blog)))
          (debug! "no more pages."))))))
