@@ -1,24 +1,23 @@
 * blog-backup [[https://github.com/jiacai2050/blog-backup/actions/workflows/ci.yml][https://github.com/jiacai2050/blog-backup/actions/workflows/ci.yml/badge.svg]] [[https://www.npmjs.com/package/blog-backup][https://badge.fury.io/js/blog-backup.svg]]
 
-Backup blogposts to PDF for offline storage / reading in Kindle, built with Puppeteer and ClojureScript
+Backup blog posts to PDF for offline backup / reading in Kindle, built with Puppeteer and ClojureScript.
 
 ** Setup
-*** NPM
+*** Npm
 #+begin_src bash
-npm i blog-backup --global
+npm i blog-backup -g
 #+end_src
-Before you start, you can copy [[./config.edn][config.edn]] to following position:
+Before you start, you need a config. Copy [[./config.edn][config.edn]] to one of following positions:
 1. =${HOME}/.blogbackup.edn=
 2. =${XDG_CONF_HOME}/blogbackup/config.edn=
 
+That's it.
 *** Manual
 #+begin_src bash
 # 1. install dependencies
 npm i
 
 # 2. compile Node.js script to bin/main.js
-lein cljsbuild once main
-# or
 lein release
 # or download already compiled main.js from release page
 # https://github.com/jiacai2050/blog-backup/releases
@@ -49,7 +48,7 @@ blog-backup -w nathan -o /tmp/nathan -v
 #+end_src
 **** Supported Blog
 
-| -w     | blog                                            |
+| who    | blog                                            |
 |--------+-------------------------------------------------|
 | ljc    | https://liujiacai.net/                          |
 | yw     | http://www.yinwang.org/                         |
@@ -58,7 +57,7 @@ blog-backup -w nathan -o /tmp/nathan -v
 | TBD    | ...                                             |
 
 **** Extension
-In order to backup any posts of a blog, you can try add a new item in [[file:.blogbackup.edn][.blog-backup.edn]], such as
+In order to backup any posts of a blog, you can try add a new item in [[file:config.edn][config.edn]], such as
 #+begin_src clojure
 {:id "grab"
  :base-url "https://engineering.grab.com/"

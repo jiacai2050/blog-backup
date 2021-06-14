@@ -4,7 +4,7 @@
             [clojure.tools.cli :refer [parse-opts]]
             [cljs.reader :as reader]
             [goog.string.format]
-            [blog-backup.logging :refer [debug! info! error! set-level!]]
+            [blog-backup.logging :refer [debug! error! set-level!]]
             [blog-backup.chromium :as c]
             [blog-backup.pdf :refer [<print-all-posts]]
             [blog-backup.protocol :refer [new-blog new-static-blog]]
