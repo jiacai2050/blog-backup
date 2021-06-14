@@ -1,4 +1,4 @@
-* blog-backup [[https://travis-ci.org/jiacai2050/blog-backup][https://travis-ci.org/jiacai2050/blog-backup.svg?branch=master]] [[https://www.npmjs.com/package/blog-backup][https://badge.fury.io/js/blog-backup.svg]]
+* blog-backup [[https://github.com/jiacai2050/blog-backup/actions/workflows/ci.yml][https://github.com/jiacai2050/blog-backup/actions/workflows/ci.yml/badge.svg]] [[https://www.npmjs.com/package/blog-backup][https://badge.fury.io/js/blog-backup.svg]]
 
 Backup blogposts to PDF for offline storage / reading in Kindle, built with Puppeteer and ClojureScript
 

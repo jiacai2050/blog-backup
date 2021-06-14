@@ -1,5 +1,5 @@
 .*
-!.blogbackup.edn
+config.edn
 out
 project.clj
 src

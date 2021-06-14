@@ -9,12 +9,11 @@ before_install:
   - nvm install $NODE_VERSION
 
 install:
-  - npm install
-  - lein deps
+  - make deps
 
 cache:
   directories:
     - node_modules
 
 script:
-  - lein with-profile test doo node test once
+  - make test-ci

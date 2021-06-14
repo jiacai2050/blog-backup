@@ -43,6 +43,7 @@
                                          :pretty-print true}}}}
   :aliases {"dev" ["cljsbuild" "auto" "main"]
             "test" ["with-profile" "test" "doo" "node" "test" "auto"]
+            "test-ci" ["with-profile" "test" "doo" "node" "test" "once"]
             "release" ["with-profile" "release" "do"
                        ["clean"]
                        ["cljsbuild" "once" "main"]]})
