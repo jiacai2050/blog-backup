@@ -14,20 +14,22 @@
 (enable-console-print!)
 
 (def cli-options
-  [["-o" "--out-dir DIR" "output dir" :default "/tmp/blog"]
+  [["-o" "--out-dir DIR" "output dir" :default u/default-out-dir]
    ["-w" "--who WHO" "whose blog to print"]
    ["-a" "--addr Address" "print a single page"]
-   ["-c" "--conf Conf" "config file" :default (str u/home-dir "/.blogbackup.edn")]
-   ["-p" "--proxy PROXY" "http proxy"]
+   ["-c" "--conf Config" "config file" :default u/default-conf-file]
+   ["-p" "--proxy Proxy" "http proxy"]
    ;; https://pptr.dev/#?product=Puppeteer&version=v5.2.1&show=api-puppeteerlaunchoptions
    ["-P" "--puppeteer-opts OPTS" "options to set on the browser. format: a=b;c=d"]
-   ["-m" "--media MEDIA" "media type" :default "print"]
-   ["-u" "--user-agent userAgent" "userAgent"]
+   ["-m" "--media Media" "media type" :default "print"]
+   ["-u" "--user-agent UserAgent" "UserAgent"]
    ["-v" "--verbose"]
+   ["-V" "--version"]
    ["-h" "--help"]])
 
 
 (defonce static-blogs (atom {}))
+(defonce version-str "v0.4.1")
 
 (defn print-pdf [dir who pp-opts]
   (u/init-dir! dir)
@@ -47,17 +49,26 @@
     (let [conf (reader/read-string conf)]
       (doseq [{:keys [id]
                :as blog-item} (:blogs conf)]
-        (swap! static-blogs assoc id (dissoc blog-item :id)))
-      (debug! (u/format-str "static config %s" @static-blogs)))
-    (debug! (u/format-str "conf file %s not exist." conf-file))))
+        (swap! static-blogs assoc id (dissoc blog-item :id))))
+    (throw (js/Error. (u/format-str "%s not exist" conf-file)))))
 
 (defn -main [& args]
   (let [{:keys [options summary errors] :as opts} (parse-opts args cli-options)
-        {:keys [out-dir who addr conf help verbose proxy puppeteer-opts
+        {:keys [out-dir who version addr conf help verbose proxy puppeteer-opts
                 media user-agent]} options]
     (when verbose
       (set-level! :debug))
+
+    (debug! (u/format-str "default-config-file:%s, default-data-dir:%s" u/default-conf-file u/default-data-dir))
     (debug! (str "\n" (u/pretty-str (dissoc opts :summary))))
+
+    (when help
+      (println summary)
+      (.exit js/process 0))
+    (when version
+      (println version-str)
+      (.exit js/process 0))
+
     (when conf
       (parse-conf! conf))
     (when media
@@ -67,9 +78,10 @@
 
     (cond
       (not (nil? errors)) (error! errors)
-      help (info! (str "\n" summary))
+      help (println summary)
       addr (print-page addr out-dir (u/prepare-options proxy puppeteer-opts))
-      :else  (let [opts (u/prepare-options proxy puppeteer-opts)]
-               (print-pdf out-dir who opts)))))
+      who  (let [opts (u/prepare-options proxy puppeteer-opts)]
+             (print-pdf out-dir who opts))
+      :else (println summary))))
 
 (set! *main-cli-fn* -main)

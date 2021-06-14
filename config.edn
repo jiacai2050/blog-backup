@@ -25,11 +25,16 @@
           :posts-selector "div#content > ul > li > a"
           :page-tmpl "{{base-url}}"
           :total-page 1}
-         {:id "ljc2"
+         {:id "ljc-hexo"
           :base-url "https://liujiacai.net/archives/"
           :posts-selector "ul.listing > li > a"
           :page-tmpl "{{base-url}}{{^first-page}}page/{{page-num}}{{/first-page}}"
           :total-page 8}
+         {:id "ljc"
+          :base-url "https://liujiacai.net/post/"
+          :posts-selector "div.archive-post > span > a.archive-post-link"
+          :page-tmpl "{{base-url}}{{^first-page}}page/{{page-num}}{{/first-page}}"
+          :total-page 3}
          {:id "yw"
           :base-url "http://www.yinwang.org/"
           :posts-selector "ul.list-group > li > a"

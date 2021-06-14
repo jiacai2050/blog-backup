@@ -1,9 +1,9 @@
-(defproject blog-backup "0.3.2"
+(defproject blog-backup "0.1.0"
   :description "Backup blog posts to PDF for offline storage"
   :url "https://github.com/jiacai2050/blog-backup/"
   :license {:name "MIT"
             :url "https://liujiacai.net/license/MIT.html?year=2020"}
-  :dependencies [[org.clojure/clojure "1.10.1"]
+  :dependencies [[org.clojure/clojure "1.10.3"]
                  [org.clojure/clojurescript "1.10.773"]
                  [org.clojure/core.async "1.2.603"]
                  ;; https://github.com/alexanderkiel/async-error

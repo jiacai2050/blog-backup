@@ -7,46 +7,44 @@ Backup blogposts to PDF for offline storage / reading in Kindle, built with Pupp
 #+begin_src bash
 npm i blog-backup --global
 #+end_src
-After install
-- =blog-backup= command will be installed at =$NPM/bin=
-- [[./.blogbackup.edn][.blogbackup.edn]] will be soft-linked to your home directry
+Before you start, you can copy [[./config.edn][config.edn]] to following position:
+1. =${HOME}/.blogbackup.edn=
+2. =${XDG_CONF_HOME}/blogbackup/config.edn=
 
 *** Manual
-
 #+begin_src bash
-
-1. install dependencies
+# 1. install dependencies
 npm i
 
-2. compile Node.js script to bin/main.js
+# 2. compile Node.js script to bin/main.js
 lein cljsbuild once main
 # or
 lein release
 # or download already compiled main.js from release page
 # https://github.com/jiacai2050/blog-backup/releases
 
-3. init conf
-ln -sf $(pwd)/.blogbackup.edn ~/.blogbackup.edn
+# 3. init config
+ln -sf $(pwd)/config.edn ~/.blogbackup.edn
 #+end_src
 
 ** Usage
 #+begin_src bash
 blog-backup -h
-  -o, --out-dir DIR          /tmp/blog  output dir
-  -w, --who WHO                         whose blog to print
-  -c, --conf Conf    ~/.blogbackup.edn  config file
-  -a, --addr Address                    print a single page
-  -p, --proxy PROXY                     http proxy
-  -P, --puppeteer-opts OPTS             options to set on the browser. format: a=b;c=d
-  -m, --media MEDIA           print     media type
-  -u, --user-agent userAgent            userAgent
-  -v, --verbose  -v, --verbose
+  -o, --out-dir DIR           /tmp/blog-backup                  output dir
+  -w, --who WHO                                                 whose blog to print
+  -a, --addr Address                                            print a single page
+  -c, --conf Config           ~/.blogbackup.edn                 config file
+  -p, --proxy Proxy                                             http proxy
+  -P, --puppeteer-opts OPTS                                     options to set on the browser. format: a=b;c=d
+  -m, --media Media           print                             media type
+  -u, --user-agent UserAgent                                    UserAgent
+  -v, --verbose
+  -V, --version
   -h, --help
-
 #+end_src
 *** Backup All posts of a blog
+Demo, backup nathan's posts to /tmp/nathan
 #+begin_src
-# Demo, backup nathan's posts to /tmp/nathan
 blog-backup -w nathan -o /tmp/nathan -v
 #+end_src
 **** Supported Blog
@@ -62,11 +60,11 @@ blog-backup -w nathan -o /tmp/nathan -v
 **** Extension
 In order to backup any posts of a blog, you can try add a new item in [[file:.blogbackup.edn][.blog-backup.edn]], such as
 #+begin_src clojure
-{:id "ljc"
- :base-url "https://liujiacai.net/archives/"
- :posts-selector "ul.listing > li > a"
- :page-tmpl "{{base-url}}{{^first-page}}page/{{page-num}}{{/first-page}}"
- :total-page 8}
+{:id "grab"
+ :base-url "https://engineering.grab.com/"
+ :posts-selector "h2 > a.post-title"
+ :page-tmpl "{{base-url}}{{^first-page}}blog/{{page-num}}/{{/first-page}}"
+ :total-page 18}
 #+end_src
 - =base-url=,  archives page of a blog
 - =posts-selector=, selector passed to =document.querySelectorAll= to select all posts. (usually end with =a= tag)
@@ -86,6 +84,10 @@ You can also set http proxy with =-p= or puppeteer.launch [[https://pptr.dev/#?p
 blog-backup -p socks5://127.0.0.1:13659 -a https://news.ycombinator.com/item?id=23947157
 blog-backup -p socks5://127.0.0.1:13659 -P 'timeout=60;devtools=true' -a https://news.ycombinator.com/item?id=23947157
 #+end_src
+
+* ChangeLog
+** 0.4.1 (2021-06-14)
+- Config support [[https://wiki.archlinux.org/title/XDG_Base_Directory][XDG convention]].
 
 *  License
 [[http://liujiacai.net/license/MIT.html?year=2020][MIT License]] © Jiacai Liu
