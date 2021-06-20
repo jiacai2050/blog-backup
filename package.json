@@ -1,7 +1,7 @@
 {
   "name": "blog-backup",
   "description": "Backup blog posts to PDF for offline storage",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "bin": "./bin/main.js",
   "main": "bin/main.js",
   "repository": {
@@ -14,7 +14,8 @@
     "tool"
   ],
   "dependencies": {
-    "puppeteer": "10.0.0"
+    "puppeteer": "10.0.0",
+    "pdfjs": "2.4.3"
   },
   "devDependencies": {
     "source-map-support": "0.5.19"

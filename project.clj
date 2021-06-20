@@ -1,5 +1,5 @@
 (defproject blog-backup "0.1.0"
-  :description "Backup blog posts to PDF for offline storage"
+  :description "Backup blog posts to PDF for offline backup"
   :url "https://github.com/jiacai2050/blog-backup/"
   :license {:name "MIT"
             :url "https://liujiacai.net/license/MIT.html?year=2020"}
@@ -14,20 +14,17 @@
                  [camel-snake-kebab "0.4.1"]
                  [hiccups "0.3.0"]
                  [cljstache "2.0.6"]
-                 [org.clojure/tools.cli "1.0.194"]
-                 ]
+                 [org.clojure/tools.cli "1.0.194"]]
   :jvm-opts ^:replace ["-Xmx1g" "-server"]
   :plugins [[lein-cljsbuild "1.1.8"]
             [lein-pprint "1.3.2"]
             [lein-doo "0.1.10"]]
   :npm {:dependencies [[source-map-support "0.5.19"]
                        [puppeteer "5.2.0"]]}
-  :source-paths ["src" "target/classes"]
+  :source-paths ["src"]
   :clean-targets [:target-path "bin"]
   :target-path "target"
-  :profiles {:dev {:dependencies [[cider/piggieback "0.5.0"]]
-                   :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}}
-             :release {:cljsbuild {:builds {:main {:compiler {:optimizations :simple
+  :profiles {:release {:cljsbuild {:builds {:main {:compiler {:optimizations :simple
                                                               :pretty-print false}}}}}
              :test {:cljsbuild {:builds {:test {:source-paths ["src" "test"]
                                                 :compiler {:output-to "target/js/test.js"

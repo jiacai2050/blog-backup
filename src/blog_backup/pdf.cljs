@@ -5,7 +5,14 @@
             [blog-backup.protocol :as prot]
             [blog-backup.chromium :as c]
             [blog-backup.logging :refer [debug! info! error!]]
-            [blog-backup.util :as u]))
+            [blog-backup.util :as u]
+
+            [fs]
+            [path]))
+
+(defonce pdfjs (js/require "pdfjs"))
+(defonce Document (.-Document pdfjs))
+(defonce ExternalDocument (.-ExternalDocument. pdfjs))
 
 (defn- format-name [out-dir url title seq-num]
   (u/format-str "%s/%s-%s.pdf"
@@ -15,6 +22,18 @@
                 (if (empty? title)
                   (last (cs/split url "/"))
                   (cs/replace title "/" "-"))))
+
+(defn <merge-to-one [indir out-file]
+  (let [files (fs/readdirSync indir)
+        files (filter #(.endsWith % "pdf") (js->clj files))
+        doc (Document.)]
+    (doseq [f files]
+      (let [src (path/join indir f)
+            ext (ExternalDocument. (fs/readFileSync src))]
+        (.addPagesOf doc ext)))
+    (go-try
+     (.pipe doc (fs/createWriteStream out-file))
+     (<p! (.end doc)))))
 
 (defn <print-all-posts [browser blog out-dir]
   (go-try
@@ -42,4 +61,7 @@
                    (error! (u/format-str "failed to save %s, skip to next..." url) e))))
              (debug! "pagedown.."))
            (recur (prot/page-down! blog)))
-         (debug! "no more pages."))))))
+         (do
+           (debug! "no more pages.")
+           (info! "Generate all-posts-merged.pdf")
+           (<merge-to-one out-dir (path/join out-dir "all-posts-merged.pdf"))))))))

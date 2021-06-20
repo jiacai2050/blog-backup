@@ -15,3 +15,4 @@ bin/*js
 .cljs_node_repl/
 .DS_Store
 .eastwood
+/.log

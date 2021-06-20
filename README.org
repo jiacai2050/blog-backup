@@ -87,6 +87,8 @@ blog-backup -p socks5://127.0.0.1:13659 -P 'timeout=60;devtools=true' -a https:/
 * ChangeLog
 ** 0.4.1 (2021-06-14)
 - Config support [[https://wiki.archlinux.org/title/XDG_Base_Directory][XDG convention]].
+** 0.5.0 (2021-06-20)
+- Merge all posts to one =all-posts-merged.pdf= file after iterate.
 
 *  License
 [[http://liujiacai.net/license/MIT.html?year=2020][MIT License]] © Jiacai Liu

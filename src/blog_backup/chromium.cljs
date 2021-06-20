@@ -57,8 +57,7 @@
                                            :right 10
                                            :left 10}
                                  :headerTemplate page-header
-                                 :footerTemplate page-footer
-                                 })))))))
+                                 :footerTemplate page-footer})))))))
 
 (defn <eval-in-page [browser url selector vanilla-js-fn]
   (debug! (u/format-str "[eval-in-page] url: %s, selector: %s" url selector))

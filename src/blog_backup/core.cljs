@@ -27,22 +27,21 @@
    ["-V" "--version"]
    ["-h" "--help"]])
 
-
 (defonce static-blogs (atom {}))
-(defonce version-str "v0.4.1")
+(defonce version-str "v0.5.0")
 
 (defn print-pdf [dir who pp-opts]
   (u/init-dir! dir)
   (go
-   (let [browser (<? (c/<new-browser pp-opts))]
-     (try
-       (let [blog (if-let [blog-item (@static-blogs who)]
-                    (new-static-blog blog-item browser)
-                    (<? (new-blog {:who who} browser)))]
-         (<? (<print-all-posts browser blog dir)))
-       (catch js/Error e (error! "print pdf failed" e))
-       (finally
-         (.close browser))))))
+    (let [browser (<? (c/<new-browser pp-opts))]
+      (try
+        (let [blog (if-let [blog-item (@static-blogs who)]
+                     (new-static-blog blog-item browser)
+                     (<? (new-blog {:who who} browser)))]
+          (<? (<print-all-posts browser blog dir)))
+        (catch js/Error e (error! "print pdf failed" e))
+        (finally
+          (.close browser))))))
 
 (defn parse-conf! [conf-file]
   (if-let [conf (u/slurp conf-file)]
