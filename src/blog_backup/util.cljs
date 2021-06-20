@@ -15,7 +15,7 @@
 (defn ensure-dir! [dir]
   (when-not (.existsSync fs dir)
     (debug! (str "create dir " dir))
-    (.mkdirSync fs dir)))
+    (.mkdirSync fs dir #js {:recursive true})))
 
 (defonce home-dir (.homedir os))
 (defonce default-conf-file
@@ -58,7 +58,7 @@
              (map #(js->clj (gs/splitLimit % "=" 2)))
              (map (fn [[k v]] [(cs/trim (csk/->camelCase k)) (cs/trim v)]))
              (into {}))
-      $
+        $
     (update $ "args" (fnil #(js->clj (js/JSON.parse %)) "[]"))
     (if proxy
       (update $ "args" #(conj % (str "--proxy-server=" proxy)))

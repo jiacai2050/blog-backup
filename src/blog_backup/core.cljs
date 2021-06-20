@@ -6,7 +6,7 @@
             [goog.string.format]
             [blog-backup.logging :refer [debug! error! set-level!]]
             [blog-backup.chromium :as c]
-            [blog-backup.pdf :refer [<print-all-posts]]
+            [blog-backup.pdf :refer [<print-all-posts merge-pdfs]]
             [blog-backup.protocol :refer [new-blog new-static-blog]]
             [blog-backup.single-page :refer [print-page]]
             [blog-backup.util :as u]))
@@ -14,15 +14,17 @@
 (enable-console-print!)
 
 (def cli-options
-  [["-o" "--out-dir DIR" "output dir" :default u/default-out-dir]
-   ["-w" "--who WHO" "whose blog to print"]
-   ["-a" "--addr Address" "print a single page"]
-   ["-c" "--conf Config" "config file" :default u/default-conf-file]
-   ["-p" "--proxy Proxy" "http proxy"]
+  [["-o" "--out-dir Dir" "Output dir" :default u/default-out-dir]
+   ["-w" "--who Who" "Whose blog to backup"]
+   ["-u" "--url URL" "Save URL as pdf"]
+   ["-m" "--merge-dir input-dir" "Merge PDFs in dir as one"]
+   ["-c" "--conf Config" "Config file" :default u/default-conf-file]
+
+   ["-p" "--proxy Proxy" "HTTP Proxy"]
    ;; https://pptr.dev/#?product=Puppeteer&version=v5.2.1&show=api-puppeteerlaunchoptions
-   ["-P" "--puppeteer-opts OPTS" "options to set on the browser. format: a=b;c=d"]
-   ["-m" "--media Media" "media type" :default "print"]
-   ["-u" "--user-agent UserAgent" "UserAgent"]
+   ["-P" "--puppeteer-opts OPTS" "Options to set on the browser. format: a=b;c=d"]
+   ["-M" "--media Media" "Media type" :default "print"]
+   ["-U" "--user-agent UserAgent" "UserAgent"]
    ["-v" "--verbose"]
    ["-V" "--version"]
    ["-h" "--help"]])
@@ -53,8 +55,9 @@
 
 (defn -main [& args]
   (let [{:keys [options summary errors] :as opts} (parse-opts args cli-options)
-        {:keys [out-dir who version addr conf help verbose proxy puppeteer-opts
-                media user-agent]} options]
+        {:keys [who merge-dir url  ;; main subcommands
+                out-dir conf help verbose version
+                proxy puppeteer-opts media user-agent]} options]
     (when verbose
       (set-level! :debug))
 
@@ -78,7 +81,8 @@
     (cond
       (not (nil? errors)) (error! errors)
       help (println summary)
-      addr (print-page addr out-dir (u/prepare-options proxy puppeteer-opts))
+      merge-dir (merge-pdfs merge-dir out-dir)
+      url (print-page url out-dir (u/prepare-options proxy puppeteer-opts))
       who  (let [opts (u/prepare-options proxy puppeteer-opts)]
              (print-pdf out-dir who opts))
       :else (println summary))))

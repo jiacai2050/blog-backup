@@ -1,5 +1,6 @@
 (ns blog-backup.pdf
   (:require [async-error.core :refer-macros [go-try <?]]
+            [cljs.core.async :refer [go]]
             [cljs.core.async.interop :refer-macros [<p!]]
             [clojure.string :as cs]
             [blog-backup.protocol :as prot]
@@ -13,6 +14,7 @@
 (defonce pdfjs (js/require "pdfjs"))
 (defonce Document (.-Document pdfjs))
 (defonce ExternalDocument (.-ExternalDocument. pdfjs))
+(defonce merged-file "merged.pdf")
 
 (defn- format-name [out-dir url title seq-num]
   (u/format-str "%s/%s-%s.pdf"
@@ -25,8 +27,11 @@
 
 (defn <merge-to-one [indir out-file]
   (let [files (fs/readdirSync indir)
-        files (filter #(.endsWith % "pdf") (js->clj files))
+        files (filter #(and (.endsWith % "pdf")
+                            (not= % merged-file)) (js->clj files))
         doc (Document.)]
+    (when (zero? (count files))
+      (throw (ex-info "no pdfs found" {:input-dir indir})))
     (doseq [f files]
       (let [src (path/join indir f)
             ext (ExternalDocument. (fs/readFileSync src))]
@@ -63,5 +68,15 @@
            (recur (prot/page-down! blog)))
          (do
            (debug! "no more pages.")
-           (info! "Generate all-posts-merged.pdf")
-           (<merge-to-one out-dir (path/join out-dir "all-posts-merged.pdf"))))))))
+           (info! "Generate merged.pdf")
+           (<merge-to-one out-dir (path/join out-dir merged-file))))))))
+
+(defn merge-pdfs [input-dir out-dir]
+  (go
+    (try
+      (u/ensure-dir! out-dir)
+      (let [out-file (path/join out-dir merged-file)]
+        (info! (u/format-str "Merge PDFs in %s to %s" input-dir out-file))
+        (<? (<merge-to-one input-dir out-file)))
+      (catch js/Error e
+        (error! "merge failed" e)))))

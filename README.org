@@ -29,13 +29,14 @@ ln -sf $(pwd)/config.edn ~/.blogbackup.edn
 ** Usage
 #+begin_src bash
 blog-backup -h
-  -o, --out-dir DIR           /tmp/blog-backup                  output dir
-  -w, --who WHO                                                 whose blog to print
-  -a, --addr Address                                            print a single page
-  -c, --conf Config           ~/.blogbackup.edn                 config file
-  -p, --proxy Proxy                                             http proxy
-  -P, --puppeteer-opts OPTS                                     options to set on the browser. format: a=b;c=d
-  -m, --media Media           print                             media type
+  -o, --out-dir Dir           /tmp/blog-backup                  Output dir
+  -w, --who Who                                                 Whose blog to backup
+  -u, --url URL                                                 Save URL as PDF
+  -c, --conf Config           ~/.blogbackup.edn                 Config file
+  -m, --merge-dir input-dir                                     Merge PDFs in dir as one
+  -p, --proxy Proxy                                             HTTP Proxy
+  -P, --puppeteer-opts OPTS                                     Options to set on the browser. format: a=b;c=d
+  -M, --media Media           print                             Media type
   -u, --user-agent UserAgent                                    UserAgent
   -v, --verbose
   -V, --version
@@ -75,7 +76,11 @@ In order to backup any posts of a blog, you can try add a new item in [[file:con
 
 *** Backup single page
 #+begin_src bash
-blog-backup -a https://news.ycombinator.com/item?id=23947157
+blog-backup -u https://news.ycombinator.com/item?id=23947157
+#+end_src
+*** Backup all PDFs to one
+#+begin_src bash
+blog-backup -m /input-pdfs-dir -o /tmp/output-dir
 #+end_src
 *** Hack
 You can also set http proxy with =-p= or puppeteer.launch [[https://pptr.dev/#?product=Puppeteer&version=v5.2.1&show=api-puppeteerlaunchoptions][options]] with =-P=
@@ -89,6 +94,8 @@ blog-backup -p socks5://127.0.0.1:13659 -P 'timeout=60;devtools=true' -a https:/
 - Config support [[https://wiki.archlinux.org/title/XDG_Base_Directory][XDG convention]].
 ** 0.5.0 (2021-06-20)
 - Merge all posts to one =all-posts-merged.pdf= file after iterate.
+** 0.5.1 (2021-06-20)
+- Support Merge all posts in command line options directly.
 
 *  License
 [[http://liujiacai.net/license/MIT.html?year=2020][MIT License]] © Jiacai Liu
